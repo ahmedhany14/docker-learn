@@ -66,3 +66,10 @@
 - containers in the same network can communicate with each other using the container name.
     
 
+# 11. copy files from host machine to container and vice versa
+
+    docker container cp <file_path> <container_name>:<container_path> # to copy the file from host to container
+    docker container cp <container_name>:<container_path> <file_path> # to copy the file from container to host
+* example: 
+
+        docker container cp /file.txt alpine:/tmp/file.txt
