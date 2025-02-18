@@ -1,0 +1,3 @@
+to copy file from base machine to container 
+
+    docker container cp <target>  container-name:/path_on_container
