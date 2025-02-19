@@ -73,3 +73,19 @@
 * example: 
 
         docker container cp /file.txt alpine:/tmp/file.txt
+this approach has a bad side which is when you modify a file in the host machine, it will not be reflected in the container, so you have to copy it again. (will solve it in a storage section)
+
+# 12. storage
+
+    docker container run -d --name <container_name> -v <full host_path>:<container_path> <image_name>:<tag> # to mount a volume from the host machine to the container, so the file will be reflected in both the host and the container
+    docker volume create <volume_name> # to create a volume in the docker host
+    docker volume ls # to list all the volumes
+    docker volume inspect <volume_name> # to inspect the volume
+    docker volume rm <volume_name> # to remove the volume
+    docker container run -d --name <container_name> -v <volume_name>:<paht_in_container> <image_name>:<tag> # to mount a volume to the container which is created in the docker host and it will be reflected in both the host and the container
+
+# 13. create new images from modified container
+
+* after you run the image and add some apps or your code, you need to save the current state in a new image to use it later
+
+    docker commit <container_name> <new_image_name>:<tag>
