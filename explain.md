@@ -43,9 +43,10 @@
 
 # 9. container interaction with name
 
-1. make the container interact with another container using the name
-  
-        docker container run -it --name <container_name> --add-host<other_container_name> <image_name>:<tag> 
+1.  make the container interact with another container using the name
+
+        docker container run -it --name <container_name> --add-host<other_container_name> <image_name>:<tag>
+
 - for example, if nginx container is running, and we want to make the alpine container interact with the nginx container
 
 # 10. network
@@ -64,16 +65,17 @@
 - it is important to note that the container in host network will not have the network isolation, it will share the host network.
 - the container in none network will not have any network access.
 - containers in the same network can communicate with each other using the container name.
-    
 
 # 11. copy files from host machine to container and vice versa
 
     docker container cp <file_path> <container_name>:<container_path> # to copy the file from host to container
     docker container cp <container_name>:<container_path> <file_path> # to copy the file from container to host
-* example: 
 
-        docker container cp /file.txt alpine:/tmp/file.txt
-this approach has a bad side which is when you modify a file in the host machine, it will not be reflected in the container, so you have to copy it again. (will solve it in a storage section)
+- example:
+
+          docker container cp /file.txt alpine:/tmp/file.txt
+
+  this approach has a bad side which is when you modify a file in the host machine, it will not be reflected in the container, so you have to copy it again. (will solve it in a storage section)
 
 # 12. storage
 
@@ -86,6 +88,10 @@ this approach has a bad side which is when you modify a file in the host machine
 
 # 13. create new images from modified container
 
-* after you run the image and add some apps or your code, you need to save the current state in a new image to use it later
+- after you run the image and add some apps or your code, you need to save the current state in a new image to use it later
 
-    docker commit <container_name> <new_image_name>:<tag>
+  docker commit <container_name> <new_image_name>:<tag>
+
+# 14. build images
+
+    docker build -t <image_name>:<tag> .
