@@ -1,0 +1,27 @@
+version: "3.6"
+services:
+  frontend:
+    build: .
+    command: python app.py
+    ports:
+      - target: 5000
+        published: 3000
+    networks:
+      - frontend-net
+      - backend-net
+    volumes:
+      - type: volume
+        source: counter_app-volume
+        target: /src
+
+  redis:
+    image: redis:alpine
+    networks:
+      - backend-net
+
+networks:
+  frontend-net:
+  backend-net:
+    internal: true 
+volumes:
+  counter_app-volume:

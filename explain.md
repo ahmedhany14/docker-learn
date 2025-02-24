@@ -95,3 +95,15 @@
 # 14. build images
 
     docker build -t <image_name>:<tag> .
+
+# 15. Docker-compose
+###### Docker compose is a tool that allows you to define and run multi-container Docker applications. With Compose, you use a YAML file to configure your application’s services. Then, with a single command, you create and start all the services from your configuration.
+
+        docker-compose up # to start the services
+        docker-compose up -d # to start the services in detached mode
+        docker-compose up -f <file_name> # to start the services from a specific file not the default one (docker-compose.yml)
+        docker-compose down # to stop the services
+        docker-compose restart # to restart the services
+        docker-compose ps # to list all the services
+        docker-compose stop # to stop the services
+        docker-compose rm # to remove the services
