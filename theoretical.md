@@ -70,4 +70,146 @@ ENV NODE_ENV=production
 ENTRYPOINT ["node", "/app/index.js"]
 CMD ["node", "/app/index.js"]
 ```
+
 #### See `problem-4` dir for more details
+
+# Managing images and containers
+
+### Images
+
+* list all images
+
+```bash
+docker images
+    options:
+        -a: list all images
+        -q: list only the image IDs
+```
+
+* Removing an image
+
+    * removing an image by name:
+        ```bash
+        docker rmi <image-name>:<tag>
+        ```
+    * removing an image by ID:
+        ```bash
+        docker rmi <image-id>
+        ```
+    * removing all images:
+        ```bash
+        docker rmi $(docker images -q)
+        ```
+* Building an image
+
+    * building an image from a Dockerfile:
+        ```bash
+        docker build -t <image-name>:<tag> <path-to-dockerfile>
+        ```
+    * building an image from a Dockerfile in the current directory:
+        ```bash
+        docker build -t <image-name>:<tag> .
+        ```
+    * building an image with a specific build context:
+        ```bash
+        docker build -t <image-name>:<tag> -f <path-to-dockerfile> <build-context>
+        ```
+* Tagging an image
+
+    * tagging an image with a new name:
+        ```bash
+        docker tag <image-id> <new-image-name>:<tag>
+        ```
+    * tagging an image with a new name and a registry:
+        ```bash
+        docker tag <image-id> <registry>/<new-image-name>:<tag>
+        ```
+
+* Pushing an image to a registry
+
+    * pushing an image to a registry with a specific tag:
+        ```bash
+        docker push <image-name>:<tag>
+        ```
+    * pushing an image to a registry with a specific tag and registry:
+        ```bash
+        docker push <registry>/<image-name>:<tag>
+        ```
+
+* Pulling an image from a registry
+
+    * pulling an image from a registry with a specific tag:
+        ```bash
+        docker pull <image-name>:<tag>
+        ```
+    * pulling an image from a registry with a specific tag and registry:
+        ```bash
+        docker pull <registry>/<image-name>:<tag>
+        ```
+
+### Containers
+
+* list all running containers
+
+```bash
+docker ps
+    options:
+        -a: list all containers
+        -q: list only the container IDs
+        -l: list the last container that was run
+        -s: display the total file size
+```
+
+* Running a container
+    * Attached and Detached mode:
+
+      by default, when you run a container, it runs in the foreground, and you can see the output of the container.
+      it is called attached mode.
+
+        * attached mode:
+          ```bash
+          docker run <image-name>:<tag>
+          ```
+
+        * detached mode:
+            ```bash
+            docker run -d <image-name>:<tag>
+            ```
+
+    * Naming a container:
+        ```bash
+        docker run --name <container-name> <image-name>:<tag>
+        ```
+    * port mapping:
+        ```bash
+        docker run -p <host-port>:<container-port> <image-name>:<tag>
+        ```
+
+* Starting and Stopping a container
+
+    * stopping a running container:
+        ```bash
+        docker stop <container-id> || <container-name>
+        ```
+    * starting a stopped container (the container must be stopped and not removed):
+        ```bash
+        docker start <container-id> || <container-name>
+        ```          
+* Removing a container
+
+    * removing a stopped container:
+        ```bash
+        docker rm <container-id> || <container-name>
+        ```
+    * removing a running container:
+        ```bash
+        docker rm -f <container-id> || <container-name>
+        ```
+    * removing all containers (both running and stopped):
+        ```bash
+        docker rm $(docker ps -a -q)
+        ```
+    * removing containers after we exit from them:
+        ```bash
+        docker run --rm <image-name>:<tag>
+        ```      
