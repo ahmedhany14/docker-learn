@@ -219,14 +219,86 @@ docker ps
 ## Type of data in Docker:
 
 1. application data: the data that the application uses to run:
-   * Code files, configuration files, and other files that the application needs to run.
-   * This data is stored in the image and is read-only (fixed).
+    * Code files, configuration files, and other files that the application needs to run.
+    * This data is stored in the image and is read-only (fixed).
 
 2. Temporary data: the data that the application generates while running:
-   * Logs, cache, and other temporary files that the application generates while running.
-   * This data is stored in the container and is lost when the container is removed.
+    * Logs, cache, and other temporary files that the application generates while running.
+    * This data is stored in the container and is lost when the container is removed.
 
 3. Persistent data: the data that the application needs to store permanently:
-   * Database files, user uploads, and other data that the application needs to store permanently.
-   * This data is stored outside the container and is persistent.
+    * Database files, user uploads, and other data that the application needs to store permanently.
+    * This data is stored outside the container and is persistent.
     * Stored in volumes or bind mounts.
+
+## Two types of external storage in Docker:
+
+### 1. Volumes: managed by Docker and stored in a part of the host file system:
+
+    * **Anonymous** volumes: created and managed by Docker
+        
+        ```Dockerfile
+        VOLUME ['/app/data']
+        ``` 
+    * **Named** volumes: created and managed by Docker with a specific name
+        ```bash
+        docker volume create <volume-name>
+        docker run -v <volume-name>:<path> <image-name>:<tag>
+        ```      
+
+- **Anonymous** volumes are created automatically when you run a container with a VOLUME instruction in the Dockerfile.
+  It will be created in the /var/lib/docker/volumes directory on the host file system, and deleted when the container is
+  removed.
+
+- **Named** volumes are created manually using the docker volume create command.
+  It will be created in the /var/lib/docker/volumes directory on the host file system, and not deleted when the
+  container is removed.
+
+### 2. Bind mounts: stored anywhere on the host file system:
+
+- Managed by the user.
+- Bind mounts are created using the -v or --mount flag when running a container.
+- Used to share files between the host and the container.
+- Great for persistent data that needs to be shared between containers or stored on the host file system.
+- Bind mounts can be read-write or read-only.
+- Great for editable files like code files, configuration files, and other files that need to be shared between the host
+  and the container.
+
+```bash
+docker run -v <host-path>:<container-path> <image-name>:<tag>
+```
+
+### Comparing Volumes and Bind Mounts:
+
+| Feature                               | Anonymous Volumes                               | Named Volumes                                        | Bind Mounts                                       |
+|---------------------------------------|-------------------------------------------------|------------------------------------------------------|---------------------------------------------------|
+| **Created & Managed By**              | Docker                                          | Docker                                               | User                                              |
+| **Used By**                           | One container                                   | One or more containers                               | Host and container (shared)                       |
+| **Deleted When Container is Removed** | Yes                                             | No                                                   | No                                                |
+| **Shared Between Containers**         | No                                              | Yes                                                  | Yes                                               |
+| **Accessible from Host File System**  | No                                              | Yes                                                  | Yes                                               |
+| **Example Use Case**                  | Temporary data storage, databases in containers | Persistent data storage, databases across containers | Host file system interaction, configuration files |
+| **Performance**                       | High, optimized by Docker                       | High, optimized by Docker                            | Performance depends on host system                |
+| **Flexibility**                       | Limited to the container's lifecycle            | Can be backed up or shared easily                    | Full control over the file system                 |
+
+### Volume commands:
+
+* list all volumes:
+```bash
+docker volume ls
+```
+
+* inspect a volume:
+```bash
+docker volume inspect <volume-name>
+```
+
+* remove a volume:
+```bash
+docker volume rm <volume-name>
+```
+
+* remove all volumes:
+```bash
+docker volume rm $(docker volume ls -q)
+```

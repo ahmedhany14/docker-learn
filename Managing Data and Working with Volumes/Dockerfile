@@ -12,5 +12,7 @@ EXPOSE 3000
 
 COPY . .
 
+VOLUME [ "/app/feedback" ]
+
 CMD ["node", "server.js"]
 
