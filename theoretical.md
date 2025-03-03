@@ -213,3 +213,20 @@ docker ps
         ```bash
         docker run --rm <image-name>:<tag>
         ```      
+
+# Managing Data and Working with Volumes
+
+## Type of data in Docker:
+
+1. application data: the data that the application uses to run:
+   * Code files, configuration files, and other files that the application needs to run.
+   * This data is stored in the image and is read-only (fixed).
+
+2. Temporary data: the data that the application generates while running:
+   * Logs, cache, and other temporary files that the application generates while running.
+   * This data is stored in the container and is lost when the container is removed.
+
+3. Persistent data: the data that the application needs to store permanently:
+   * Database files, user uploads, and other data that the application needs to store permanently.
+   * This data is stored outside the container and is persistent.
+    * Stored in volumes or bind mounts.
