@@ -235,16 +235,16 @@ docker ps
 
 ### 1. Volumes: managed by Docker and stored in a part of the host file system:
 
-    * **Anonymous** volumes: created and managed by Docker
-        
-        ```Dockerfile
-        VOLUME ['/app/data']
-        ``` 
-    * **Named** volumes: created and managed by Docker with a specific name
-        ```bash
-        docker volume create <volume-name>
-        docker run -v <volume-name>:<path> <image-name>:<tag>
-        ```      
+* **Anonymous** volumes: created and managed by Docker
+    
+    ```Dockerfile
+    VOLUME ['/app/data']
+    ``` 
+* **Named** volumes: created and managed by Docker with a specific name
+    ```bash
+    docker volume create <volume-name>
+    docker run -v <volume-name>:<path> <image-name>:<tag>
+    ```      
 
 - **Anonymous** volumes are created automatically when you run a container with a VOLUME instruction in the Dockerfile.
   It will be created in the /var/lib/docker/volumes directory on the host file system, and deleted when the container is
