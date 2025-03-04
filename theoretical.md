@@ -236,7 +236,7 @@ docker ps
 ### 1. Volumes: managed by Docker and stored in a part of the host file system:
 
 * **Anonymous** volumes: created and managed by Docker
-    
+
     ```Dockerfile
     VOLUME ['/app/data']
     ``` 
@@ -284,21 +284,131 @@ docker run -v <host-path>:<container-path> <image-name>:<tag>
 ### Volume commands:
 
 * list all volumes:
+
 ```bash
 docker volume ls
 ```
 
 * inspect a volume:
+
 ```bash
 docker volume inspect <volume-name>
 ```
 
 * remove a volume:
+
 ```bash
 docker volume rm <volume-name>
 ```
 
 * remove all volumes:
+
 ```bash
 docker volume rm $(docker volume ls -q)
 ```
+
+# ENV and ARG
+
+## ENV:
+
+It is used to set environment variables in the image that can be accessed by the container.
+
+```Dockerfile
+ENV <key>=<value>
+```
+
+* ex:
+
+```Dockerfile
+ENV NODE_ENV=production
+```
+
+```bash
+docker run -e NODE_ENV=development <image-name>:<tag> 
+docker run --env-file <env-file-path> <image-name>:<tag>
+```
+
+* to access the environment variable in the container, you can use the `process.env` object in Node.js:
+
+```javascript
+console.log(process.env.NODE_ENV);
+```
+
+## ARG:
+
+It is used to pass arguments to the Dockerfile when building an image.
+
+```Dockerfile
+ARG <key>=<value>
+```
+
+* ex:
+
+```Dockerfile
+ARG NODE_VERSION=14
+```
+
+# Networking in Docker
+
+* It is used to connect containers to each other and to the outside world.
+* There are three types of communication:
+    1) **Container to container**: containers can communicate with each other using their IP addresses.
+    2) **Container to host**: containers can communicate with the host machine using the host IP address.
+    3) **Container to the outside world**: containers can communicate with the outside world using the host IP
+       address.
+
+##  Networking app:
+    
+    docker run --rm --env-file env -p 3000:3000 -v "/home/hany_jr/Backend/docker-learn/Networking:/app" -v /app/node_modules 2c2e33c0391a
+
+When you will run the above command, you will see the following output:
+
+```bash
+MongoNetworkError: failed to connect to server [127.0.0.1:27017] on first connect [Error: connect ECONNREFUSED 127.0.0.1:27017
+```
+* This error is because the container is trying to connect to the host machine, but there is no connection between them.
+* Networks will solve this problem.
+
+### For container to host communication:
+    
+    replace the host with the IP address of the host machine.
+    localhost to host.docker.internal
+
+## Network commands:
+
+* list all networks:
+```bash
+docker network ls
+```
+
+* inspect a network:
+```bash
+docker network inspect <network-name>
+```
+
+* create a network:
+```bash
+docker network create <network-name>
+```
+
+* connect a container to a network:
+```bash
+docker network connect <network-name> <container-name>
+```
+
+* disconnect a container from a network:
+```bash
+docker network disconnect <network-name> <container-name>
+```
+
+* remove a network:
+```bash
+docker network rm <network-name>
+```
+
+* remove all networks:
+```bash
+docker network rm $(docker network ls -q)
+```
+NOTE:
+    In the networks, the container name will be translated to the container IP address.
