@@ -30,6 +30,7 @@ app.get('/goals', async (req, res) => {
   console.log('TRYING TO FETCH GOALS');
   try {
     const goals = await Goal.find();
+
     res.status(200).json({
       goals: goals.map((goal) => ({
         id: goal.id,
@@ -39,7 +40,7 @@ app.get('/goals', async (req, res) => {
     console.log('FETCHED GOALS');
   } catch (err) {
     console.error('ERROR FETCHING GOALS');
-    console.error(err.message);
+    console.error(err);
     res.status(500).json({ message: 'Failed to load goals.' });
   }
 });
@@ -83,8 +84,10 @@ app.delete('/goals/:id', async (req, res) => {
   }
 });
 
+console.log(process.env.MONGO_URI);
+
 mongoose.connect(
-  'mongodb://localhost:27017/course-goals',
+  "mongodb://mongodb-server:27017/course-goals",
   {
     useNewUrlParser: true,
     useUnifiedTopology: true,

@@ -357,8 +357,8 @@ ARG NODE_VERSION=14
     3) **Container to the outside world**: containers can communicate with the outside world using the host IP
        address.
 
-##  Networking app:
-    
+## Networking app:
+
     docker run --rm --env-file env -p 3000:3000 -v "/home/hany_jr/Backend/docker-learn/Networking:/app" -v /app/node_modules 2c2e33c0391a
 
 When you will run the above command, you will see the following output:
@@ -366,53 +366,61 @@ When you will run the above command, you will see the following output:
 ```bash
 MongoNetworkError: failed to connect to server [127.0.0.1:27017] on first connect [Error: connect ECONNREFUSED 127.0.0.1:27017
 ```
+
 * This error is because the container is trying to connect to the host machine, but there is no connection between them.
 * Networks will solve this problem.
 
 ### For container to host communication:
-    
+
     replace the host with the IP address of the host machine.
     localhost to host.docker.internal
 
 ## Network commands:
 
 * list all networks:
+
 ```bash
 docker network ls
 ```
 
 * inspect a network:
+
 ```bash
 docker network inspect <network-name>
 ```
 
 * create a network:
+
 ```bash
 docker network create <network-name>
 ```
 
 * connect a container to a network:
+
 ```bash
 docker network connect <network-name> <container-name>
 ```
 
 * disconnect a container from a network:
+
 ```bash
 docker network disconnect <network-name> <container-name>
 ```
 
 * remove a network:
+
 ```bash
 docker network rm <network-name>
 ```
 
 * remove all networks:
+
 ```bash
 docker network rm $(docker network ls -q)
 ```
-NOTE:
-    In the networks, the container name will be translated to the container IP address.
 
+NOTE:
+In the networks, the container name will be translated to the container IP address.
 
 # Multi-container applications
 
@@ -427,18 +435,126 @@ NOTE:
 3. **MongoDB**: a database that stores the form data.
 
 ### Requirements:
-1. **MongoDB**: 
-   * Data Must be persistent.
-   * Access should be limited to the server only.
+
+1. **MongoDB**:
+    * Data Must be persistent.
+    * Access should be limited to the server only.
 
 2. **Server**:
-   * Must be able to communicate with the client and the worker.
-   * Must be able to store data in the database.
-   * Log’s file should be persistent.
-   * Live source code should be shared with the host
+    * Must be able to communicate with the client and the worker.
+    * Must be able to store data in the database.
+    * Log’s file should be persistent.
+    * Live source code should be shared with the host
 
 3. **Client**
     * Must be able to communicate with the server.
     * Live source code should be shared with the host
 
+## Steps:
 
+1. **mongoDB**
+
+* Normal way, give name and map the port:
+    ```bash
+    docker run --rm -d --name mongodb-server -p 27017:27017 <image-name>:<tag>
+    ```
+* Using network:
+    ```bash
+    docker run --rm -d --name mongodb-server --network goal-net <image-name>:<tag>
+    ```
+* make data persistent:
+    ```bash
+    docker run --rm -d --name mongodb-server --network goal-net -v mongodb-data:/data/db <image-name>:<tag>
+    ```
+  `NOTE: you should know the path where the data stored in the conatianer`
+
+* Secure the database:
+    ```bash
+    docker run --rm -d --name mongodb-server --network goal-net -v mongodb-data:/data/db -e MONGO_INITDB_ROOT_USERNAME=admin -e MONGO_INITDB_ROOT_PASSWORD=password <image-name>:<tag>
+    ```
+  `NOTE: you should know the path where the data stored in the conatianer`
+
+2. **server**
+
+* Normal way:
+    * create a docker file
+    * build the image
+    * run the container
+      ```bash
+      docker run --rm -d --name goal-back -p 80:80  <image-name>:<tag>
+        ```
+* Using network:
+    * fix code to connect to the mongodb server (container name):
+      ```javascript
+      mongoose.connect('mongodb://mongodb-server:27017/goal', {
+          useNewUrlParser: true,
+          useUnifiedTopology: true,
+      });
+      ```
+    *
+    ```bash
+    docker run --rm -d --name goal-back --network goal-net <image-name>:<tag>
+    ```
+* Make the log file persistent:
+    * create a volume
+    * mount the volume to the container
+    *
+    ```bash
+    docker run --rm -d --name goal-back --network goal-net -v goal-logs:/app/logs <image-name>:<tag>
+    ```      
+
+* Live source code should be shared with the host:
+    *
+    ```bash
+    docker run --rm -d --name goal-back --network goal-net -v /home/hany_jr/Backend/docker-learn/Multi_dockerizing/server:/app <image-name>:<tag>
+    ```
+* ignore node_modules:
+    *
+    ```bash
+    docker run --rm -d --name goal-back --network goal-net -v /home/hany_jr/Backend/docker-learn/Multi_dockerizing/server:/app -v /app/node_modules <image-name>:<tag>
+    ```
+
+  * Connection string in env
+      * create an env file
+      * pass the env file to the container
+      * fix the code to connect to the mongodb server (container name):
+        ```javascript
+        mongoose.connect(process.env.MONGO_URI, {
+            useNewUrlParser: true,
+            useUnifiedTopology: true,
+        });
+        ```
+          *
+            ```bash
+      docker run --rm -d --name goal-back --network goal-net -p 80:80 -v "/home/ahmed_hany/Back-end/docker-learn/multi_dockerizing/backend:/app" -v logs:/app/logs -v /app/node_modules --env-file env goal-app-backend:v4  
+            ```
+* Connect to Secure database
+    * fix code to connect to the mongodb server (container name):
+      ```javascript
+      mongoose.connect('mongodb://admin:password@mongodb-server:27017/goal?authSource=admin', {
+          useNewUrlParser: true,
+          useUnifiedTopology: true,
+      });
+      ```
+    *
+    ```bash
+    docker run --rm -d --name goal-back --network goal-net <image-name>:<tag>
+    ```
+
+
+3. **client**
+
+* create a docker file
+* build the image
+* run the container
+  ```bash
+  docker run --rm --name goal-front -p 3000:3000  <image-name>:<tag>
+  ```
+
+4. NetWork:
+
+* create a network
+
+```bash
+docker network create goal-net 
+```
