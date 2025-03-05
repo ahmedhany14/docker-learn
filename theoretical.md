@@ -412,3 +412,33 @@ docker network rm $(docker network ls -q)
 ```
 NOTE:
     In the networks, the container name will be translated to the container IP address.
+
+
+# Multi-container applications
+
+`Lock at multi_dockerizing dir`
+
+## App demo:
+
+### There are 3 parts of the app:
+
+1. **Client**: a React app that displays a form to the user.
+2. **Server**: a Node.js app that receives the form data from the client and sends it to the worker.
+3. **MongoDB**: a database that stores the form data.
+
+### Requirements:
+1. **MongoDB**: 
+   * Data Must be persistent.
+   * Access should be limited to the server only.
+
+2. **Server**:
+   * Must be able to communicate with the client and the worker.
+   * Must be able to store data in the database.
+   * Log’s file should be persistent.
+   * Live source code should be shared with the host
+
+3. **Client**
+    * Must be able to communicate with the server.
+    * Live source code should be shared with the host
+
+
