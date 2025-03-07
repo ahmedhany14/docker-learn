@@ -558,3 +558,36 @@ In the networks, the container name will be translated to the container IP addre
 ```bash
 docker network create goal-net 
 ```
+
+# Docker Compose
+* It is a tool for defining and running multi-container Docker applications.
+
+
+## Compose file:
+#### 1. **version**: the version of the composed file.
+#### 2. **services**: a list of services that make up the application.
+* **image**: the image to use for the service.
+* **container_name**: the name of the container.
+* **ports**: the ports to expose.
+* **volumes**: the volumes to mount.
+* **environment**: the environment variables to set.
+* **networks**: the networks to connect to.
+* **build**: the build context for the service.
+* **command**: the command to run when the container starts.
+
+
+## Commands:
+* build and start the services:
+```bash
+docker-compose up
+```
+```bash
+docker-compose up -d # to run in detached mode
+```
+* stop and remove the services:
+```bash
+docker-compose down
+```
+```bsah
+docker-compose down -v # to remove the volumes
+```
