@@ -84,8 +84,6 @@ app.delete('/goals/:id', async (req, res) => {
   }
 });
 
-console.log(process.env.MONGO_URI);
-
 mongoose.connect(
   "mongodb://mongodb-server:27017/course-goals",
   {
@@ -98,7 +96,8 @@ mongoose.connect(
       console.error(err);
     } else {
       console.log('CONNECTED TO MONGODB');
-      app.listen(80);
+      app.listen(8080);
     }
   }
 );
+console.log('process.env.MONGO_URI', process.env.MONGO_URI);
