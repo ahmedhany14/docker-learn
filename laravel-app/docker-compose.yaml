@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+  nginx-server:
+    image: 'nginx:stable-alpine'
+    container_name: nginx-server
+    ports:
+      - "8000:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro # we are mounting the nginx configuration file, where the request will be redirected to the php-fpm container
+       
+#  php-backend:
+#
+#  my-sql-server:
+#
+#  composer:
+#
+#  artisan:
+#
+#  npm:
+
+volumes:
+
+
+networks:
